@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 // Include the database configuration file
 include_once '../dbConfig.php';
@@ -12,15 +12,17 @@ if ($connection->connect_error) {
 }
 
 $outgoing_id = $_SESSION['email'];
-$sql = "SELECT * FROM users WHERE NOT email = '$outgoing_id' AND userType = 'tourGuide' ORDER BY id DESC";
-$query = mysqli_query($connection, $sql);
+
+$stmt = $connection->prepare("SELECT * FROM users WHERE email != ? AND userType = 'tourGuide' ORDER BY id DESC");
+$stmt->bind_param("s", $outgoing_id);
+$stmt->execute();
+$query = $stmt->get_result();
+
 $output = "";
-if(mysqli_num_rows($query) == 0){
+if ($query->num_rows == 0) {
     $output .= "No users are available to chat";
-} else if (mysqli_num_rows($query) >0){
+} else {
     include_once "data.php";
 }
 echo $output;
 ?>
-
-

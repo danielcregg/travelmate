@@ -1,35 +1,35 @@
 <?php
-SESSION_START();
+session_start();
 include 'dbConfig.php';
 
-//connect to database
-
+// Connect to database
 $connection = new mysqli($server, $username, $password, $database);
-if(!$connection) {
-	echo "Error";
+if ($connection->connect_error) {
+    die("Connection failed: " . $connection->connect_error);
+}
+
+if (!isset($_SESSION['email'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$imagePath = $_POST['imagePath'];
+$country = $_POST['country'];
+$bio = $_POST['bio'];
+$email = $_SESSION['email'];
+
+$stmt = $connection->prepare("UPDATE users SET country = ?, bio = ?, image_path = ? WHERE email = ?");
+$stmt->bind_param("ssss", $country, $bio, $imagePath, $email);
+
+if ($stmt->execute()) {
+    $_SESSION["update_message"] = 'Profile updated!';
+    header("Location: userProfile.php");
+    exit;
 } else {
-    $imagePath = $_POST['imagePath'];
-    $country = $_POST['country'];
-    $bio = $_POST['bio'];
-    $email = $_SESSION['email'];
+    $_SESSION["update_message"] = 'Something went wrong, please try again.';
+    header("Location: updateProfile.php");
+    exit;
+}
 
-    $check_user = "SELECT * FROM users WHERE email='$email'";
-    $check_qry = mysqli_query($connection, $check_user);
-    if($check_qry) {
-    
-        $sql = "UPDATE users SET country = '$country', bio = '$bio', image_path = '$imagePath' WHERE email='$email'";
-        $run_qry=mysqli_query($connection, $sql);
-        if($run_qry) {
-            $_SESSION["update_message"] = 'Profile updated!';
-             header("location: userProfile.php");
-        } else {
-            $_SESSION["update_message"] = 'Something went wrong, please try again.';
-             header("location: updateProfile.php");
-        }
-
-    }
-        
-} 
-
-
+$connection->close();
 ?>

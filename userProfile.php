@@ -18,8 +18,9 @@
 <body>
 <?php include 'navbar.php';
 
-if(!isset($_SESSION['email'])) { 
-    header("location: login.php");
+if (!isset($_SESSION['email'])) {
+    header("Location: login.php");
+    exit;
 }
 
 include 'dbConfig.php';
@@ -39,25 +40,26 @@ if ($connection->connect_error) {
             <div class="col-12 col-md-6">
                 <div class="row">
                     <div class="col-6">
-                    <?php if(isset($_SESSION["username"]))  { 
+                    <?php if (isset($_SESSION["username"])) {
                         $email = $_SESSION['email'];
-                        $findUserID = "Select * from users WHERE email = '$email'";
-                        $result = mysqli_query($connection,$findUserID) or die("Bad Query.");
-                        while($row = $result->fetch_array()) {
-                            $userID = $row['id'];
-                            $name = $row['name'];
-                            $country = $row['country'];
-                            $bio = $row['bio'];
-                            $image_path = $row['image_path'];
-                        } ?>
+                        $stmt = $connection->prepare("SELECT * FROM users WHERE email = ?");
+                        $stmt->bind_param("s", $email);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $row = $result->fetch_assoc();
+                        $name = $row['name'] ?? '';
+                        $country = $row['country'] ?? '';
+                        $bio = $row['bio'] ?? '';
+                        $image_path = $row['image_path'] ?? '';
+                    ?>
 
-                        <img class="img-fluid profileImg" src="<?php echo $image_path ?>" alt="">
+                        <img class="img-fluid profileImg" src="<?php echo htmlspecialchars($image_path); ?>" alt="">
                     <?php } ?>
                     </div>
                     <div class="col-6">
-                        <h2><?php echo $name ?></h2>
-                        <h4><?php echo $country ?></h4>
-                        <p><?php echo $bio ?></p>
+                        <h2><?php echo htmlspecialchars($name ?? ''); ?></h2>
+                        <h4><?php echo htmlspecialchars($country ?? ''); ?></h4>
+                        <p><?php echo htmlspecialchars($bio ?? ''); ?></p>
                     </div>
                 </div>
             </div>

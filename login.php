@@ -18,8 +18,9 @@
 </head>
 <body>
 <?php include 'navbar.php';
-if(isset($_SESSION['email'])) { 
-  header("location: index.php");
+if (isset($_SESSION['email'])) {
+    header("Location: index.php");
+    exit;
 }
 ?>
 
@@ -43,12 +44,12 @@ if(isset($_SESSION['email'])) {
                       <h2 class="text-center smallHeadline my-3">Log In</h2>
 					  <p>Haven't got an account? <span class="my-5"><a href="register.php">Register Here</a></span></p>
             <?php
-            if (isset( $_SESSION["message"])) {
-                echo $_SESSION["message"];
+            if (isset($_SESSION["message"]) && $_SESSION["message"] !== '') {
+                echo '<div class="alert alert-warning">' . htmlspecialchars($_SESSION["message"]) . '</div>';
             }
-            if (isset( $_SESSION["regis_message"])) {
-              echo $_SESSION["regis_message"];
-          }
+            if (isset($_SESSION["regis_message"]) && $_SESSION["regis_message"] !== '') {
+                echo '<div class="alert alert-info">' . htmlspecialchars($_SESSION["regis_message"]) . '</div>';
+            }
             ?>
 					  
       

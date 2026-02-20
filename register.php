@@ -18,8 +18,9 @@
 </head>
 <body>
 <?php include 'navbar.php';
-if(isset($_SESSION['email'])) { 
-  header("location: index.php");
+if (isset($_SESSION['email'])) {
+    header("Location: index.php");
+    exit;
 }
 ?>
 
@@ -44,8 +45,8 @@ if(isset($_SESSION['email'])) {
 					           <p>Have an account? <span class="my-5"><a href="login.php">Login Here</a></span></p>
                         
                         <?php
-                          if (isset( $_SESSION["regis_message"])) {
-                            echo $_SESSION["regis_message"];
+                          if (isset($_SESSION["regis_message"]) && $_SESSION["regis_message"] !== '') {
+                              echo '<div class="alert alert-warning">' . htmlspecialchars($_SESSION["regis_message"]) . '</div>';
                           }
                         ?>
 

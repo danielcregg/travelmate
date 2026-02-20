@@ -29,8 +29,9 @@ if ($connection->connect_error) {
 </head>
 <body>
 <?php include 'navbar.php';
-if(!isset($_SESSION['email'])) { 
-    header("location: index.php");
+if (!isset($_SESSION['email'])) {
+    header("Location: index.php");
+    exit;
 }
 ?>
 <img src="img/user-banner.png" class="img-fluid" alt="">
@@ -38,24 +39,25 @@ if(!isset($_SESSION['email'])) {
 	<!-- MAIN-->
     <div class="container" style="margin: 6% auto;">
 
-    <?php 
+    <?php
         $email = $_SESSION['email'];
-        $sql = mysqli_query($connection, "SELECT * FROM users WHERE email = '$email' ");
-        if (mysqli_num_rows($sql) > 0) {
-            $row = mysqli_fetch_assoc($sql);
-        }
-        ?>
+        $stmt = $connection->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+    ?>
 
     <form action="update.php" method="POST">
             <div class="form-group my-2">
                 <label class="mb-2" for="imagePath">Profile image path:</label>
-                <input type="text" class="form-control" id="imagePath" placeholder="imagePath" name="imagePath" value="<?php echo $row['image_path']?>" required> 
+                <input type="text" class="form-control" id="imagePath" placeholder="imagePath" name="imagePath" value="<?php echo htmlspecialchars($row['image_path'] ?? ''); ?>" required>
             </div>
             <div class="form-group my-2">
                 <!-- Country names and Country Name -->
             <label class="mb-2" for="country">Where are you staying:</label>
             <select class="form-select" id="country" name="country" required>
-                <option value="<?php echo $row['country']?>" default><?php echo $row['country']?></option>
+                <option value="<?php echo htmlspecialchars($row['country'] ?? ''); ?>" selected><?php echo htmlspecialchars($row['country'] ?? ''); ?></option>
                 <option value="Afghanistan">Afghanistan</option>
                 <option value="Aland Islands">Aland Islands</option>
                 <option value="Albania">Albania</option>
@@ -312,7 +314,7 @@ if(!isset($_SESSION['email'])) {
             </div>
             <div class="form-group my-2">
                 <label class="mb-2" for="bio">Your favourite quote, bio:</label>
-                <input type="text" class="form-control" id="bio" placeholder="bio" name="bio" value="<?php echo $row['bio']?>" required> 
+                <input type="text" class="form-control" id="bio" placeholder="bio" name="bio" value="<?php echo htmlspecialchars($row['bio'] ?? ''); ?>" required> 
             </div>
                 <button type="submit" class="btn btn-primary signUpBtn">Submit</button>
     </form>

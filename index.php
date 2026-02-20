@@ -162,7 +162,8 @@
                       <h2 class="text-center smallHeadline my-3">Sign up</h2>
 					  <p>Have an account? <span class="my-5"><a href="login.php">Login Here</a></span></p>
 
-                      <form action="register.php" method="POST">
+                      <form action="database.php" method="POST">
+                        <input type="hidden" name="action" value="registration">
                         <div class="form-group my-2">
                             <label class="mb-2" for="name">Full Name</label>
                             <input type="text" class="form-control" id="name" placeholder="Bob Dylan" name="name" required>
@@ -171,24 +172,24 @@
                           <label class="mb-2" for="inputEmail1">Email address</label>
                           <input type="email" class="form-control" id="inputEmail1" aria-describedby="emailHelp" name="email" placeholder="bobdylan@gmail.com" required>
                           <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                        </div> 
+                        </div>
                         <div class="form-group my-2">
                           <label class="mb-2" for="inputPassword">Password</label>
-                          <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password" required> 
+                          <input type="password" class="form-control" id="inputPassword" placeholder="Password" name="password" required>
                         </div>
-						<div class="form-group my-2">
+                        <div class="form-group my-2">
                           <label class="mb-2" for="inputConfirmPassword">Confirm Password</label>
-                          <input type="password" class="form-control" id="inputConfirmPassword" placeholder="confirm password" name="confirm_password" required> 
+                          <input type="password" class="form-control" id="inputConfirmPassword" placeholder="confirm password" name="confirm_password" required>
                         </div>
-      
+
                         <div class="form-check mt-4 mb-2">
-                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked name="userType" value="traveler">
+                          <input class="form-check-input" type="radio" name="userType" id="flexRadioDefault1" value="traveler" checked>
                           <label class="form-check-label" for="flexRadioDefault1">
                           Sign up as a traveler.
                           </label>
                         </div>
                         <div class="form-check mb-4">
-                          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" name="userType" value="tourGuide">
+                          <input class="form-check-input" type="radio" name="userType" id="flexRadioDefault2" value="tourGuide">
                           <label class="form-check-label" for="flexRadioDefault2">
                           Sign up as a tour guide.
                           </label>

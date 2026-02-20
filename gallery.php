@@ -50,8 +50,8 @@ if ($connection->connect_error) {
                 <p class="text-center mb-3"><i>"A change of latitude would help my attitude." – Unknown</i></p>
 
                 <?php
-            if (isset( $_SESSION["statusMsg"])) {
-                echo $_SESSION["statusMsg"];
+            if (isset($_SESSION["statusMsg"]) && $_SESSION["statusMsg"] !== '') {
+                echo '<div class="alert alert-info">' . htmlspecialchars($_SESSION["statusMsg"]) . '</div>';
             }
             ?>
 
@@ -80,8 +80,8 @@ if ($connection->connect_error) {
                 ?>
                     
                 <div class="col-sm-6 col-md-4 col-lg-3 item">
-                    <a href="<?php echo $imageURL; ?>" data-lightbox="photos" data-title="<?php echo $caption; ?>">
-                        <img class="img-fluid" src="<?php echo $imageURL; ?>">
+                    <a href="<?php echo htmlspecialchars($imageURL); ?>" data-lightbox="photos" data-title="<?php echo htmlspecialchars($caption); ?>">
+                        <img class="img-fluid" src="<?php echo htmlspecialchars($imageURL); ?>">
                     </a>
                 </div>
                 <?php }

@@ -1,6 +1,7 @@
 <?php
-SESSION_START();
-if(isset($_SESSION['email'])){
+session_start();
+
+if (isset($_SESSION['email'])) {
     // Include the database configuration file
     include_once 'dbConfig.php';
 
@@ -11,23 +12,20 @@ if(isset($_SESSION['email'])){
     if ($connection->connect_error) {
         die("Connection failed: " . $connection->connect_error);
     }
+
     $logout_email = $_SESSION['email'];
-    if(isset($logout_email)){
-        $status = "Offline now";
-        $sql = mysqli_query($connection, "UPDATE users SET status = '$status' WHERE email = '$logout_email'");
-        if($sql){
-            session_unset();
-            session_destroy();
-            header("Location: /index.php");
-        }
-    }else{
-        header("location: ../chatlist.php");
-    }
-}else{  
-    header("Location: /index.php");
+    $status = "Offline now";
+
+    $stmt = $connection->prepare("UPDATE users SET status = ? WHERE email = ?");
+    $stmt->bind_param("ss", $status, $logout_email);
+    $stmt->execute();
+
+    $connection->close();
+
+    session_unset();
+    session_destroy();
 }
 
+header("Location: index.php");
+exit;
 ?>
-
-
-    

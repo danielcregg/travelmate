@@ -42,40 +42,40 @@ if ($connection->connect_error) {
         <h1 class="headline">Find A Tour Guide For You</h1>
     <div class="row mt-4">
     <?php
-    // Get users from the database
-              if(isset($_SESSION["username"]))  {
-                $this_user = $_SESSION['email'];
-                } else {
-                    $this_user = "nobody";
-                }
-                $query = $connection->query("SELECT * FROM users WHERE NOT email = '$this_user' AND userType = 'tourGuide' ORDER BY name DESC");
+    // Get users from the database using prepared statements
+    if (isset($_SESSION["username"])) {
+        $this_user = $_SESSION['email'];
+        $stmt = $connection->prepare("SELECT * FROM users WHERE email != ? AND userType = 'tourGuide' ORDER BY name DESC");
+        $stmt->bind_param("s", $this_user);
+    } else {
+        $stmt = $connection->prepare("SELECT * FROM users WHERE userType = 'tourGuide' ORDER BY name DESC");
+    }
+    $stmt->execute();
+    $query = $stmt->get_result();
 
-                if($query->num_rows > 0){
-                    while($row = $query->fetch_assoc()){
-                        $imagePath = $row['image_path'];
-                        $country = $row['country'];
-                        $name = $row['name'];
-                        $email = $row['email'];
-
-                ?>
+    if ($query->num_rows > 0) {
+        while ($row = $query->fetch_assoc()) {
+            $imagePath = htmlspecialchars($row['image_path']);
+            $country = htmlspecialchars($row['country']);
+            $name = htmlspecialchars($row['name']);
+            $email = htmlspecialchars($row['email']);
+    ?>
         <div class="col-sm-6 col-md-4 col-lg-3 item">
-        <div class="cardProfile p-0">
-                    <div class="card-image">
-                        <img src="<?php echo $imagePath; ?>" alt="">
-                    </div>
-                    <div class="card-content d-flex flex-column align-items-center">
-                        <h4 class="pt-2"><?php echo $name; ?></h4>
-                        <h5><?php echo $country; ?></h5>
-                        <a class="btn btn-outline-light btn-lg mt-3" href="chat.php?user_email=<?php echo $email; ?>" role="button">Connect</a> 
-                    </div>
+            <div class="cardProfile p-0">
+                <div class="card-image">
+                    <img src="<?php echo $imagePath; ?>" alt="<?php echo $name; ?>">
                 </div>
-
-
+                <div class="card-content d-flex flex-column align-items-center">
+                    <h4 class="pt-2"><?php echo $name; ?></h4>
+                    <h5><?php echo $country; ?></h5>
+                    <a class="btn btn-outline-light btn-lg mt-3" href="chat.php?user_email=<?php echo urlencode($row['email']); ?>" role="button">Connect</a>
+                </div>
+            </div>
         </div>
-        <?php }
-                }else{ ?>
-                    <p>No user found...</p>
-                <?php } ?>
+    <?php }
+    } else { ?>
+        <p>No user found...</p>
+    <?php } ?>
 
        
 
